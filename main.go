@@ -1,22 +1,20 @@
 package main
 
 import (
+	"blog/infrastructure"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
-	r := gin.Default()
-	r.GET("/ping", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"message": "pong",
-		})
+	router := gin.Default()
+	router.GET("/", func(context *gin.Context) {
+		infrastructure.LoadEnv()     //loading env
+		infrastructure.NewDatabase() //new database connection
+		context.JSON(http.StatusOK, gin.H{"data": "Hello World !"})
 	})
+	router.Run(":8000")
 
-	r.GET("/hello", func(c *gin.Context) {
-		c.String(http.StatusOK, "Hello World!")
-	})
-
-	r.Run()
+	router.Run()
 }
